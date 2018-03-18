@@ -1,0 +1,146 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+
+
+```{r}
+station = read.csv("../data_prep_final/wangsibli_2012_2017_in2.csv", header=TRUE)
+
+
+month <- substring(station$date, 6, 7)
+day <- substring(station$date, 9, 10)
+head(month)
+head(day)
+
+t <- as.integer(rownames(station))
+t <- as.numeric(t)
+station_month <- cbind(t,station,month)
+head(station_month)
+
+
+
+
+```
+
+
+```{r}
+
+station_train <- station_month[c(1:1827),]
+dim(station_train)
+
+stataion_test <- station_month[c(1828:2100),]
+dim(stataion_test)
+
+station_train$ts <- ts(station_train$passengers,frequency=365,start=c(2012,01,01))
+stataion_test$ts <- ts(stataion_test$passengers,frequency=365,start=c(2012,01,01))
+
+```
+
+
+
+
+## triginimetric
+```{r}
+### trinometric models
+
+# tri regression
+
+# Predict
+L = 7
+m12_1 <- lm(passengers ~ t + cos((2*pi*t)/L) + sin((2*pi*t)/L), data=station_train)
+summary(m12_1)
+
+m12_2 <- lm(passengers ~ t + cos((2*pi*t)/L)+sin((2*pi*t)/L)+cos((4*pi*t)/L)+sin((4*pi*t)/L), data=station_train)
+summary(m12_2)
+
+# ù??° ????
+
+pre_m12_1 <- predict(m12_1, stataion_test, type="response")
+result12_1 <- cbind(stataion_test,pre_m12_1)
+result12_1$pre_m12_1_ts <- ts(result12_1$pre_m12_1,frequency=365,start=c(2012,01,01))
+head(result12_1)
+
+
+jpeg("./trigonometric_result/wangsibli_predict_plot_model_1.jpg")
+options("scipen" = 100)
+Passengers = result12_1$ts
+plot(Passengers, ylim=range(10000,40000))
+par(new=TRUE)
+Passengers = result12_1$pre_m12_1_ts
+plot(Passengers, ylim=range(10000,40000), type='l', col="red", main = "왕십리", cex.main=3)
+dev.off()
+
+
+# ?ι?° ????
+
+pre_m12_2 <- predict(m12_2,stataion_test,type="response")
+result12_2 <- cbind(stataion_test,pre_m12_2)
+result12_2$pre_m12_2_ts <- ts(result12_2$pre_m12_2,frequency=365,start=c(2012,01,01))
+head(result12_2)
+
+jpeg("./trigonometric_result/wangsibli_predict_plot_model_2.jpg")
+options("scipen" = 100)
+Passengers = result12_2$ts
+plot(Passengers, ylim=range(10000,40000))
+par(new=TRUE)
+Passengers = result12_2$pre_m12_2_ts
+plot(Passengers, ylim=range(10000,40000), type='l', col="red", main = "왕십리", cex.main=3)
+dev.off()
+
+
+```
+
+
+```{r}
+
+# result_df_model_1 <- data.frame()
+# result_df_model_2 <- data.frame()
+
+library(ModelMetrics)
+## model 1
+model_1_rmse <- rmse(result12_1$passengers, result12_1$pre_m12_1)
+passengers_mean <- mean(result12_1$passengers)
+model_1_AIC <- extractAIC(m12_1)[2]
+
+
+result_df_model_1[7,1] <- "wangsibli"
+result_df_model_1[7,2] <- passengers_mean
+result_df_model_1[7,3] <- model_1_rmse
+result_df_model_1[7,4] <- model_1_AIC
+
+colnames(result_df_model_1) <- c("station", "passengers_mean", "RMSE", "AIC")
+
+result_df_model_1
+
+write.csv(result_df_model_1, "./trigonometric_result/model_1_result.csv")
+
+
+#################################################
+
+## model 2
+model_2_rmse <- rmse(result12_2$passengers, result12_2$pre_m12_2)
+passengers_mean <- mean(result12_2$passengers)
+model_2_AIC <- extractAIC(m12_2)[2]
+
+
+result_df_model_2[7,1] <- "wangsibli"
+result_df_model_2[7,2] <- passengers_mean
+result_df_model_2[7,3] <- model_2_rmse
+result_df_model_2[7,4] <- model_2_AIC
+
+colnames(result_df_model_2) <- c("station", "passengers_mean", "RMSE", "AIC")
+
+result_df_model_2
+
+write.csv(result_df_model_2, "./trigonometric_result/model_2_result.csv")
+
+
+
+```
+
+
+
+

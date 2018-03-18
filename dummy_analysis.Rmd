@@ -1,0 +1,132 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+
+
+```{r}
+station = read.csv("../data_prep_final/gangnam_2012_2017_in2.csv", header=TRUE)
+
+month <- substring(station$date, 6, 7)
+day <- substring(station$date, 9, 10)
+head(month)
+head(day)
+
+t <- as.integer(rownames(station))
+t <- as.numeric(t)
+station_month <- cbind(t,station,month)
+head(station_month)
+
+
+```
+
+
+## weekdays = 7일 일주일로 나누어서 더미화
+```{r}
+make_date <- as.Date(station_month$date)
+
+day_of_week <- weekdays(make_date)
+
+station_month$day_of_week <- day_of_week
+day_levels <- c("일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일")
+
+day_to_numeric <- as.numeric(factor(weekdays((make_date)), levels=day_levels, ordered=TRUE))
+
+station_month$day_num <- as.numeric(factor(weekdays((make_date)), levels=day_levels, ordered=TRUE))
+
+
+sun <- (station_month$day_num == 1) * 1
+mon <- (station_month$day_num == 2) * 1
+tue <- (station_month$day_num == 3) * 1
+wed <- (station_month$day_num == 4) * 1
+thu <- (station_month$day_num == 5) * 1
+fri <- (station_month$day_num == 6) * 1
+sat <- (station_month$day_num == 7) * 1
+
+```
+
+## cross validation
+```{r}
+
+stataion_data_dummy <- cbind(station_month,sun,mon,tue,wed,thu,fri,sat)
+dim(stataion_data_dummy)
+station_train <- stataion_data_dummy[c(1:1827),]
+dim(station_train)
+
+# station_valid <- stataion_data_dummy[c(1828:2070),]
+# station_train_2 <- stataion_data_dummy[c(1:2070),]
+
+stataion_test <- stataion_data_dummy[c(1828:2100),]
+dim(stataion_test)
+
+
+station_train$ts <- ts(station_train$passengers,frequency=365,start=c(2012,01,01))
+stataion_test$ts <- ts(stataion_test$passengers,frequency=365,start=c(2017,01,01))
+
+
+
+```
+
+
+
+```{r}
+
+station_dummy_train_model <- lm(passengers ~ t+sun+mon+tue+wed+thu+fri, data=station_train)
+summary(station_dummy_train_model)
+
+
+# vadlidation_dummy_model <- 
+
+
+
+predict_station_dummy <- predict(station_dummy_train_model, stataion_test, type="response")
+result_dummy <- cbind(stataion_test,predict_station_dummy)
+result_dummy$predict_station_dummy_ts <- ts(result_dummy$predict_station_dummy,frequency=365,start=c(2017,01,01))
+
+head(result_dummy)
+result_dummy
+
+# ggplot(result_dummy, aes(t, passengers),) + geom_line() + geom_line(aes(x=t, y=predict_station_dummy), colour="red")
+jpeg("./dummy_result/gangnam_dummy_predict_plot_1129.jpg")
+options("scipen" = 100)
+Passengers = result_dummy$ts
+plot(Passengers, ylim=range(10000,150000))
+par(new=TRUE)
+Passengers = result_dummy$predict_station_dummy_ts
+plot(Passengers, ylim=range(10000,150000), type='l', col="red", main = "강남", cex.main=3)
+dev.off()
+
+```
+
+
+
+```{r}
+#result_df <- data.frame()
+
+
+library(ModelMetrics)
+dummy_rmse <- rmse(result_dummy$passengers, result_dummy$predict_station_dummy)
+passengers_mean <- mean(result_dummy$passengers)
+
+dummy_AIC <- extractAIC(station_dummy_train_model)[2]
+
+result_df[7,1] <- "gangnam"
+result_df[7,2] <- passengers_mean
+result_df[7,3] <- dummy_rmse
+result_df[7,4] <- dummy_AIC
+
+colnames(result_df) <- c("station", "passengers_mean", "RMSE", "AIC")
+
+result_df
+
+write.csv(result_df, "./dummy_result/dummy_model_result_1129.csv")
+```
+
+
+
+
+
+
+
