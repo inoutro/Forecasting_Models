@@ -1,5 +1,5 @@
 ---
-title: "Dummy Model Codes"
+title: "Dummy Model Code"
 output: html_document
 ---
 
