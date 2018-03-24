@@ -47,7 +47,6 @@ sat <- (station_month$day_num == 7) * 1
 
 ```
 
-## cross validation
 ```{r}
 
 stataion_data_dummy <- cbind(station_month,sun,mon,tue,wed,thu,fri,sat)
@@ -77,10 +76,6 @@ station_dummy_train_model <- lm(passengers ~ t+sun+mon+tue+wed+thu+fri, data=sta
 summary(station_dummy_train_model)
 
 
-# vadlidation_dummy_model <- 
-
-
-
 predict_station_dummy <- predict(station_dummy_train_model, stataion_test, type="response")
 result_dummy <- cbind(stataion_test,predict_station_dummy)
 result_dummy$predict_station_dummy_ts <- ts(result_dummy$predict_station_dummy,frequency=365,start=c(2017,01,01))
@@ -104,7 +99,6 @@ dev.off()
 
 ```{r}
 #result_df <- data.frame()
-
 
 library(ModelMetrics)
 dummy_rmse <- rmse(result_dummy$passengers, result_dummy$predict_station_dummy)
