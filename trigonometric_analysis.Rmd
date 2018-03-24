@@ -42,9 +42,9 @@ stataion_test$ts <- ts(stataion_test$passengers,frequency=365,start=c(2012,01,01
 
 
 
-## triginimetric
+## trigonometric
 ```{r}
-### trinometric models
+### trigonometric models
 
 # tri regression
 
