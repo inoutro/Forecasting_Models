@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Trigonometric Models Code"
 output: html_document
 ---
 
@@ -42,9 +42,9 @@ stataion_test$ts <- ts(stataion_test$passengers,frequency=365,start=c(2012,01,01
 
 
 
-## triginimetric
+## trigonometric
 ```{r}
-### trinometric models
+### trigonometric models
 
 # tri regression
 
@@ -56,7 +56,7 @@ summary(m12_1)
 m12_2 <- lm(passengers ~ t + cos((2*pi*t)/L)+sin((2*pi*t)/L)+cos((4*pi*t)/L)+sin((4*pi*t)/L), data=station_train)
 summary(m12_2)
 
-# ù??° ????
+# Model 1 - The first model is useful for modeling a very regular seasonal time series that exhibits constant seasonal variations.
 
 pre_m12_1 <- predict(m12_1, stataion_test, type="response")
 result12_1 <- cbind(stataion_test,pre_m12_1)
@@ -74,7 +74,7 @@ plot(Passengers, ylim=range(10000,40000), type='l', col="red", main = "왕십리
 dev.off()
 
 
-# ?ι?° ????
+# Model 2 - The second model is useful for modeling more complicated seasonal pattern.
 
 pre_m12_2 <- predict(m12_2,stataion_test,type="response")
 result12_2 <- cbind(stataion_test,pre_m12_2)
@@ -136,8 +136,6 @@ colnames(result_df_model_2) <- c("station", "passengers_mean", "RMSE", "AIC")
 result_df_model_2
 
 write.csv(result_df_model_2, "./trigonometric_result/model_2_result.csv")
-
-
 
 ```
 

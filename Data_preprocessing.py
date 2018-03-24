@@ -29,13 +29,13 @@ def station_1(one, name):
     sta_1.to_csv(name + "_2012_2017_out2.csv", index=False)
 
 
-# station_2("왕십리(5)", "왕십리(208)", "wangsibli")
-# station_2("합정(238)", "합정(6)", "hapjung")
-# station_2("사당(226)", "사당(433)", "sadang")
-# station_2("건대입구(212)", "건대입구(7)", "konkuk")
+station_2("왕십리(5)", "왕십리(208)", "wangsibli")
+station_2("합정(238)", "합정(6)", "hapjung")
+station_2("사당(226)", "사당(433)", "sadang")
+station_2("건대입구(212)", "건대입구(7)", "konkuk")
 station_2("시청(151)", "시청(201)", "sichung")
-# station_1("강남(222)", "gangnam")
-# station_1("신도림(234)", "sindorim")
+station_1("강남(222)", "gangnam")
+station_1("신도림(234)", "sindorim")
 
 station_1("안국(318)", "anguk")
 station_1("종각(152)", "jongkak")
