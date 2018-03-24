@@ -15,5 +15,5 @@ Arima 모델의 greedy search를 통하여 더 정확한 모델을 구축하기 
 
 
 <p align="center">
-  <img height="600" src = "https://raw.githubusercontent.com/inoutro/Forecasting_Models/master/Heatmap_plot.jpeg"/>
+  <img height="672" src = "https://raw.githubusercontent.com/inoutro/Forecasting_Models/master/Heatmap_plot.jpeg"/>
 </p>
