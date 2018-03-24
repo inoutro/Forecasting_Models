@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "Trigonometric Models Code"
 output: html_document
 ---
 
