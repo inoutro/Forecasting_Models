@@ -12,3 +12,8 @@ Forecasting Models class Team Project - Seoul Subway Entry and exit person predi
 
 ## 3. Heatmap_adjust.R
 Arima 모델의 greedy search를 통하여 더 정확한 모델을 구축하기 위하여 greedy search를 진행하였고, greedy search 결과를 heatmap으로 나타낸 코드이다.
+
+
+<p align="center">
+  <img height="672" src = "https://raw.githubusercontent.com/inoutro/Forecasting_Models/master/Heatmap_plot.jpeg"/>
+</p>
